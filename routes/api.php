@@ -28,3 +28,7 @@ Route::post("register",[UserController::class,'register']);
 Route::post("login",[UserController::class,'index']);
 
 Route::get("get",[UserController::class,'getUser']); 
+
+Route::put("update",[UserController::class,'update']); 
+
+Route::delete("delete/{id}",[UserController::class,'delete']); 

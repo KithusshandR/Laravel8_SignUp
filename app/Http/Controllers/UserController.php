@@ -75,4 +75,33 @@ class UserController extends Controller
         return User::get();
     }
 
+    //updet
+    function update(Request $request){
+
+        $user=User::find($request->id);
+        $user->name=$request->name;
+        $user->email=$request->email;
+        $user->password=$request->password;
+        $result=$user->save();
+        if($result){
+            return ["result"=>"data is updated "];
+        }
+        else{
+            return ["result"=>"data is updated failed"];
+        }   
+    }
+
+    //delate
+    function delete($id){
+        $user=User::find($id);
+        $result=$user->delete();
+        if ($result)
+        {
+            return ["result"=>"record has been delete"];
+        }
+        else{
+            return ["result"=>"delete oparation is faild"];
+        }
+    }
+
 }
