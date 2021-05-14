@@ -24,7 +24,8 @@ class UserController extends Controller
         
             $response = [
                 'user' => $user,
-                'token' => $token
+                'token' => $token,
+                'message' => 'Login Sucessfully'
             ];
         
              return response($response, 201);
