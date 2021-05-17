@@ -37,15 +37,20 @@ class UserController extends Controller
         $user= User::where('email', $request->email)->first();
 
         $validator = Validator::make($request->all(),[
-            'name' => 'required',
-            'email' => 'required|email',
-            'password' => 'required'     
+            'name' => 'required|alpha',
+            'email' => 'required|email|unique:users,email',
+            'password' => ['required','string','min:8','regex:/[a-z]/',
+            'regex:/[A-Z]/',
+            'regex:/[a-z]/',
+            'regex:/[0-9]/',
+            'regex:/[@$!%*#?&]/'],   
         ]);
+
 
         if($validator->fails()){
             return response([
-                'errorMessage' => true,
-                'message' => 'Validator Error'
+                'error' => $validator->errors(),
+                401
             ]);
         }
 
@@ -61,6 +66,7 @@ class UserController extends Controller
         $user->password = Hash::make($request->password);
         $user->name = $request->name;
         $result = $user->save();
+        
 
         if($result){
             return response([
@@ -79,22 +85,52 @@ class UserController extends Controller
     //updet
     function update(Request $request){
 
+
+        $validator = Validator::make($request->all(),[
+            'name' => 'required|alpha',
+            'email' => 'required|email|unique:users,email',
+            'password' => ['required','string','min:8','regex:/[a-z]/',
+            'regex:/[A-Z]/',
+            'regex:/[a-z]/',
+            'regex:/[0-9]/',
+            'regex:/[@$!%*#?&]/'],   
+        ]);
+
+
+        if($validator->fails()){
+            return response([
+                'error' => $validator->errors(),
+                401
+            ]);
+        }
+    
         $user=User::find($request->id);
+        if(is_null($user)){
+            return response()->json('Record not found in database',404);
+        }
         $user->name=$request->name;
         $user->email=$request->email;
         $user->password=$request->password;
         $result=$user->save();
+
+        
         if($result){
             return ["result"=>"data is updated "];
         }
         else{
             return ["result"=>"data is updated failed"];
-        }   
+        } 
+        
+        
     }
 
     //delate
     function delete($id){
         $user=User::find($id);
+        if(is_null($user)){
+            return response()->json('Record not found in database',404);
+        }
+        
         $result=$user->delete();
         if ($result)
         {
